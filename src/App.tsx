@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { UserWarning } from './UserWarning';
 import { Todo } from './types/Todo';
 import { client } from './utils/fetchClient';
-import { FILTER_TYPES, FilterType } from './types/FilterType';
+import { FilterTypes } from './types/FilterType';
 import {
   createTodo,
   deleteTodo,
@@ -15,6 +15,7 @@ import {
 import Header from './Components/Header';
 import TodoList from './Components/TodoList';
 import Footer from './Components/Footer';
+import cn from 'classnames';
 
 interface OnDblClickParams {
   index: number;
@@ -30,8 +31,8 @@ export const App: React.FC = () => {
   const [inputLoading, setInputLoading] = useState<boolean>(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [editValue, setEditValue] = useState<string>('');
-  const [selectedFilter, setSelectedFilter] = useState<FilterType>(
-    FILTER_TYPES.ALL as FilterType,
+  const [selectedFilter, setSelectedFilter] = useState<FilterTypes>(
+    FilterTypes.ALL,
   );
   const [newTodoTitle, setNewTodoTitle] = useState<string>('');
 
@@ -39,14 +40,14 @@ export const App: React.FC = () => {
     setTodosToShow(
       todosDb.filter(todo => {
         switch (selectedFilter) {
-          case FILTER_TYPES.ALL:
+          case FilterTypes.ALL:
             return true;
-          case FILTER_TYPES.ACTIVE:
+          case FilterTypes.ACTIVE:
             return !todo.completed;
-          case FILTER_TYPES.COMPLETED:
+          case FilterTypes.COMPLETED:
             return todo.completed;
           default:
-            return todo.completed;
+            return true;
         }
       }),
     );
@@ -268,7 +269,12 @@ export const App: React.FC = () => {
       {/* Add the 'hidden' class to hide the message smoothly */}
       <div
         data-cy="ErrorNotification"
-        className={`notification is-danger is-light has-text-weight-normal ${error ? '' : 'hidden'}`}
+        className={cn(
+          'notification is-danger is-light has-text-weight-normal',
+          {
+            hidden: !error,
+          },
+        )}
       >
         <button
           data-cy="HideErrorButton"

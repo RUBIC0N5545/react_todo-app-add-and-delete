@@ -1,5 +1,6 @@
 import React from 'react';
 import { Todo } from '../types/Todo';
+import cn from 'classnames';
 
 type TodoItemProps = {
   todo: Todo;
@@ -30,31 +31,35 @@ const TodoItem: React.FC<TodoItemProps> = ({
   setEditValue,
   onDblClick,
 }) => {
+  const { id, completed, title } = todo;
+
   return (
     <div
       data-cy="Todo"
-      className={`todo ${todo.completed ? 'completed' : ''}`}
-      key={todo.id}
+      className={cn('todo', {
+        completed,
+      })}
+      key={id}
     >
       {/*eslint-disable-next-line jsx-a11y/label-has-associated-control*/}
       <label
         className="todo__status-label"
         htmlFor={`todo-${index}`}
-        onClick={() => completeTodo(todo.id, !todo.completed)}
+        onClick={() => completeTodo(id, !completed)}
       >
         <input
           data-cy="TodoStatus"
           type="checkbox"
-          id={`todo-${todo.id}`}
+          id={`todo-${id}`}
           className="todo__status"
-          checked={todo.completed}
+          checked={completed}
         />
       </label>
 
       {editIndex === index ? (
         <form
-          onSubmit={e => updateTodo(todo.id, editValue, e)}
-          onBlur={() => updateTodo(todo.id, editValue)}
+          onSubmit={e => updateTodo(id, editValue, e)}
+          onBlur={() => updateTodo(id, editValue)}
         >
           <input
             data-cy="TodoTitleField"
@@ -73,13 +78,13 @@ const TodoItem: React.FC<TodoItemProps> = ({
             className="todo__title"
             onDoubleClick={() => onDblClick({ index, todo })}
           >
-            {todo.title}
+            {title}
           </span>
           <button
             type="button"
             className="todo__remove"
             data-cy="TodoDelete"
-            onClick={() => deleteTodo(todo.id)}
+            onClick={() => deleteTodo(id)}
           >
             ×
           </button>
@@ -88,7 +93,9 @@ const TodoItem: React.FC<TodoItemProps> = ({
 
       <div
         data-cy="TodoLoader"
-        className={`modal overlay ${loadingTodoId === todo.id ? 'is-active' : ''}`}
+        className={cn('modal overlay', {
+          'is-active': loadingTodoId === id,
+        })}
       >
         <div className="modal-background has-background-white-ter" />
         <div className="loader" />
