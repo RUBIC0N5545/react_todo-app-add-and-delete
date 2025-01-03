@@ -40,8 +40,6 @@ export const App: React.FC = () => {
     setTodosToShow(
       todosDb.filter(todo => {
         switch (selectedFilter) {
-          case FilterTypes.ALL:
-            return true;
           case FilterTypes.ACTIVE:
             return !todo.completed;
           case FilterTypes.COMPLETED:

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Todo } from '../types/Todo';
+import cn from 'classnames';
 
 type HeaderProps = {
   todosDb: Todo[];
@@ -20,7 +21,9 @@ const Header: React.FC<HeaderProps> = ({
     <header className="todoapp__header">
       <button
         type="button"
-        className={`todoapp__toggle-all ${todosDb.every(todo => todo.completed) ? 'active' : ''}`}
+        className={cn('todoapp__toggle-all', {
+          active: todosDb.every(todo => todo.completed),
+        })}
         data-cy="ToggleAllButton"
       />
 
